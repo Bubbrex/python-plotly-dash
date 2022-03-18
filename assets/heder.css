@@ -1,0 +1,33 @@
+body {
+  font-family: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #42602d;
+}
+.test .rc-slider-track {
+  background-color: rgba(93, 172, 129, 0.8);
+}
+.test .rc-slider-handle {
+  border: solid 2px rgba(93, 172, 120, 0.8);
+}
+.gtitle {
+  fill: #42602d;
+}
+.dropdown {
+  margin: 1rem;
+}
+.dropdown .Select-control {
+  border: 1px solid rgba(93, 172, 120, 0.8);
+}
+
+.test {
+  position: absolute;
+  top: 400px;
+  left: 50%;
+  transform: translate(-50%, -40%);
+}
