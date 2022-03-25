@@ -10,9 +10,10 @@ app = Dash(__name__)
 # Import Data
 
 df = pd.read_excel("./data/footprint_criteria.xlsx", index_col=0,
-                   dtype={"coef_val": "str", "coef_swiped": "str", "fz": "int32", "camber": "int32","coef_ratio":"str"})
+                   dtype={"coef_val": "str", "coef_swiped": "str", "fz": "int32", "camber": "int32"})
 
-df["coef_ratio"] = df["coef_ratio"].astype("float")
+df["coef_ratio"] = df["coef_ratio"].round(1)
+
 # App Layout
 
 options_coef_swiped = [
@@ -126,13 +127,13 @@ app.layout = html.Div([
             dcc.Graph(id="my_graph", figure={} ,className = "graph"),
             html.Div(id="slider_info", style={"margin":"1rem"},children=[]),
             html.Div(id="slider",children=[
-                dcc.Slider(0.5, 1.9, step=None,id="coef_ratio", marks={},value=1.2,)]),
+                dcc.Slider(0.5, 1.9, 0.1,id="coef_ratio",value=1.2,)]),
             html.Div(id="slider2",children=[
                 html.Div(id="slider_info2", style={"margin":"1rem"},children=[]),
-                dcc.Slider(0.5, 1.9, 0.1,id="coef_ratio2", value=0.7,marks={})]),
+                dcc.Slider(0.5, 1.9, 0.1,id="coef_ratio2", value=0.7)]),
             html.Div(id="slider3",children=[
                 html.Div(id="slider_info3", style={"margin":"1rem"},children=[]),
-                dcc.Slider(0.5, 1.9, 0.1, id="coef_ratio3", value=1.5,marks={})]),
+                dcc.Slider(0.5, 1.9, 0.1, id="coef_ratio3", value=1.5)]),
             ]),
 ])
 
@@ -147,10 +148,7 @@ app.layout = html.Div([
     Output(component_id='dropdown2', component_property='style'),
     Output(component_id='dropdown3', component_property='style'),
     Output(component_id='slider2', component_property='style'),
-    Output(component_id='slider3', component_property='style'),
-    Output(component_id='coef_ratio', component_property='marks'),
-    Output(component_id='coef_ratio2', component_property='marks'),
-    Output(component_id='coef_ratio3', component_property='marks'),],     
+    Output(component_id='slider3', component_property='style')],  
     [
     Input(component_id='coef_swiped', component_property='value'),
     Input(component_id='fz', component_property='value'),
@@ -180,9 +178,6 @@ def update_graph(coef_swiped, fz, camber, coef_ratio,coef_swiped2, fz2, camber2,
     slider_info = ""
     slider_info2 = ""
     slider_info3 = ""
-    marks1 = {}
-    marks2 = {}
-    marks3 = {}
 
     if radio >=2:
         
@@ -198,10 +193,6 @@ def update_graph(coef_swiped, fz, camber, coef_ratio,coef_swiped2, fz2, camber2,
         dff = dff[dff["coef_swiped"] == coef_swiped]
         dff = dff[dff["fz"] == fz]
         dff = dff[dff["camber"] == camber]
-
-        cf_unique = sorted(dff["coef_ratio"].unique())
-        marks = dict(zip(cf_unique,[str(x) for x in cf_unique]))
-
         dff = dff[dff["coef_ratio"] == coef_ratio]
         if(dff.empty):
             coef_val = -1
@@ -213,12 +204,12 @@ def update_graph(coef_swiped, fz, camber, coef_ratio,coef_swiped2, fz2, camber2,
                 str(coef_val).replace(
                 ".", "_") + "/"+str(file)
             dfx = pd.read_fwf(current_path)
-            return dfx, coef_val,marks
+            return dfx, coef_val
 
 
     fig = go.Figure()
 
-    dfx,coef_val,marks1 = getXY(coef_swiped,fz,camber,coef_ratio)
+    dfx,coef_val = getXY(coef_swiped,fz,camber,coef_ratio)
     if(coef_val==-1):
         slider_info = "N/A"
     else:
@@ -231,8 +222,7 @@ def update_graph(coef_swiped, fz, camber, coef_ratio,coef_swiped2, fz2, camber2,
             name="First Trace"
             ))
     if radio >= 2:
-        dfx2,coef_val2,marks2 = getXY(coef_swiped2,fz2,camber2,coef_ratio2)
-        print(marks2)
+        dfx2,coef_val2 = getXY(coef_swiped2,fz2,camber2,coef_ratio2)
 
         if(coef_val2==-1):
             slider_info2 = "N/A"
@@ -247,7 +237,7 @@ def update_graph(coef_swiped, fz, camber, coef_ratio,coef_swiped2, fz2, camber2,
             ))
     
         if radio == 3:
-            dfx3,coef_val3,marks3 = getXY(coef_swiped3,fz2,camber3,coef_ratio3)
+            dfx3,coef_val3 = getXY(coef_swiped3,fz2,camber3,coef_ratio3)
             if(coef_val3 == -1):
                 slider_info3 = "N/A"
             else:
@@ -271,7 +261,7 @@ def update_graph(coef_swiped, fz, camber, coef_ratio,coef_swiped2, fz2, camber2,
         title_x=0.5
     )
 
-    return slider_info,slider_info2,slider_info3, fig,dropdown2,dropdown3,slider2,slider3,marks1,marks2,marks3
+    return slider_info,slider_info2,slider_info3, fig,dropdown2,dropdown3,slider2,slider3
 
 
 # Run the dash
