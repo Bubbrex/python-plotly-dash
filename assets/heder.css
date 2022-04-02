@@ -24,10 +24,6 @@ h6 {
 .dropdown .Select-control {
   border: 1px solid rgba(93, 172, 120, 0.8);
 }
-
-.test {
-  position: absolute;
-  top: 400px;
-  left: 50%;
-  transform: translate(-50%, -40%);
+.graph {
+  background-color: transparent;
 }
