@@ -302,6 +302,8 @@ def update_graph(coef_swiped, fz, camber, coef_ratio, coef_swiped2, fz2, camber2
                     line=go.scatter.Line(color="blue", width=5),
                     name="Third Trace"
                 ))
+    fig.update_yaxes(range=[-135, 135])
+    fig.update_xaxes(range=[-110, 110])
 
     fig.update_layout(
         height=700,
